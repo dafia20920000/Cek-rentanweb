@@ -285,7 +285,7 @@
             <p>Masukkan URL website untuk memeriksa kerentanan keamanan secara mendalam</p>
             
             <div class="input-group">
-                <input type="url" id="scanUrl" placeholder="https://websiteanda.com" required>
+                <input type="url" id="scanUrl" placeholder="https://example.com" required>
                 <button class="btn btn-primary" id="scanButton">
                     <i class="fas fa-search"></i> Scan Sekarang
                 </button>
@@ -497,6 +497,15 @@
         // =================================
         // SCANNER FUNCTIONS
         // =================================
+        function validateUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
         async function startScan() {
             const url = document.getElementById('scanUrl').value.trim();
             const loading = document.getElementById('loadingIndicator');
@@ -513,8 +522,8 @@
                 return;
             }
             
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                alert('URL harus dimulai dengan http:// atau https://');
+            if (!validateUrl(url)) {
+                alert('URL harus dimulai dengan http:// atau https:// dan format yang valid');
                 return;
             }
             
@@ -613,7 +622,6 @@
         }
         
         async function performSecurityChecks(url, websiteType) {
-            // Simulasi pemeriksaan keamanan yang sebenarnya
             const vulnerabilities = [];
             
             try {
@@ -686,7 +694,7 @@
                     });
                 }
                 
-                // 4. Tambahkan kerentanan berdasarkan jenis website
+                // 4. Add vulnerabilities based on website type
                 if (websiteType === 'wordpress') {
                     vulnerabilities.push(...vulnerabilityDatabase.wordpress);
                 } else if (websiteType === 'ecommerce') {
@@ -704,13 +712,11 @@
         }
         
         async function testSQLInjection(url) {
-            // Simulasi tes SQL injection yang sebenarnya
             try {
                 const testParams = ['id', 'search', 'category'];
                 const vulnerableParams = [];
                 const affectedPages = [];
                 
-                // Tes parameter URL
                 for (const param of testParams) {
                     const testUrl = `${url}?${param}=1'`;
                     try {
@@ -743,14 +749,12 @@
         }
         
         async function testXSS(url) {
-            // Simulasi tes XSS yang sebenarnya
             try {
                 const testParams = ['search', 'name', 'comment'];
                 const vulnerableParams = [];
                 const affectedPages = [];
                 const testPayload = '<script>alert(1)</script>';
                 
-                // Tes parameter URL
                 for (const param of testParams) {
                     const testUrl = `${url}?${param}=${encodeURIComponent(testPayload)}`;
                     try {
@@ -783,7 +787,6 @@
         }
         
         async function checkSecurityHeaders(url) {
-            // Simulasi pemeriksaan header keamanan
             try {
                 const response = await fetch(url, { 
                     method: 'GET',
@@ -817,7 +820,6 @@
         }
         
         function detectWebsiteType(url) {
-            // Deteksi berdasarkan pola URL
             if (url.includes('wp-admin') || url.includes('wp-content') || url.includes('wp-includes')) {
                 return 'wordpress';
             } else if (url.includes('shop') || url.includes('cart') || url.includes('checkout')) {
@@ -893,11 +895,11 @@
             URL.revokeObjectURL(urlObj);
         });
         
-        // Inisialisasi
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('loadingIndicator').style.display = 'none';
             document.getElementById('scanResult').style.display = 'none';
         });
     </script>
 </body>
-    </html>
+</html>
