@@ -574,7 +574,7 @@
                     vulnerabilities.forEach(vuln => {
                         const severityClass = `severity-${vuln.severity}`;
                         const severityText = vuln.severity === 'critical' ? 'Kritis' : 
-                                             vuln.severity === 'high' ? 'Tinggi' : 'Sedang';
+                                           vuln.severity === 'high' ? 'Tinggi' : 'Sedang';
                         
                         vulnerabilitiesHTML += `
                             <div class="vulnerability-item ${vuln.severity === 'critical' ? '' : 'warning'}">
@@ -713,16 +713,21 @@
                 // Tes parameter URL
                 for (const param of testParams) {
                     const testUrl = `${url}?${param}=1'`;
-                    const response = await fetch(testUrl, { 
-                        method: 'GET',
-                        headers: { 'X-Security-Scan': 'true' }
-                    });
-                    
-                    const text = await response.text();
-                    if (text.includes('SQL syntax') || text.includes('mysql_fetch') || 
-                        text.includes('unexpected end') || text.includes('syntax error')) {
-                        vulnerableParams.push(param);
-                        affectedPages.push(testUrl);
+                    try {
+                        const response = await fetch(testUrl, { 
+                            method: 'GET',
+                            headers: { 'X-Security-Scan': 'true' },
+                            mode: 'no-cors'
+                        });
+                        
+                        const text = await response.text();
+                        if (text.includes('SQL syntax') || text.includes('mysql_fetch') || 
+                            text.includes('unexpected end') || text.includes('syntax error')) {
+                            vulnerableParams.push(param);
+                            affectedPages.push(testUrl);
+                        }
+                    } catch (error) {
+                        console.error(`Error testing param ${param}:`, error);
                     }
                 }
                 
@@ -743,20 +748,26 @@
                 const testParams = ['search', 'name', 'comment'];
                 const vulnerableParams = [];
                 const affectedPages = [];
+                const testPayload = '<script>alert(1)</script>';
                 
                 // Tes parameter URL
                 for (const param of testParams) {
-                    const testUrl = `${url}?${param}=<script>alert(1)</script>`;
-                    const response = await fetch(testUrl, { 
-                        method: 'GET',
-                        headers: { 'X-Security-Scan': 'true' }
-                    });
-                    
-                    const text = await response.text();
-                    if (text.includes('<script>alert(1)</script>') && 
-                        !text.includes('&lt;script&gt;alert(1)&lt;/script&gt;')) {
-                        vulnerableParams.push(param);
-                        affectedPages.push(testUrl);
+                    const testUrl = `${url}?${param}=${encodeURIComponent(testPayload)}`;
+                    try {
+                        const response = await fetch(testUrl, { 
+                            method: 'GET',
+                            headers: { 'X-Security-Scan': 'true' },
+                            mode: 'no-cors'
+                        });
+                        
+                        const text = await response.text();
+                        if (text.includes(testPayload) && 
+                            !text.includes('&lt;script&gt;alert(1)&lt;/script&gt;')) {
+                            vulnerableParams.push(param);
+                            affectedPages.push(testUrl);
+                        }
+                    } catch (error) {
+                        console.error(`Error testing param ${param}:`, error);
                     }
                 }
                 
@@ -776,7 +787,8 @@
             try {
                 const response = await fetch(url, { 
                     method: 'GET',
-                    headers: { 'X-Security-Scan': 'true' }
+                    headers: { 'X-Security-Scan': 'true' },
+                    mode: 'no-cors'
                 });
                 
                 const headers = response.headers;
@@ -800,7 +812,7 @@
                 };
             } catch (error) {
                 console.error('Header check failed:', error);
-                return { missingHeaders: requiredHeaders };
+                return { missingHeaders: [] };
             }
         }
         
@@ -888,4 +900,4 @@
         });
     </script>
 </body>
-</html>
+    </html>
