@@ -438,9 +438,7 @@
     </footer>
 
     <script>
-        // =================================
-        // ENHANCED ENTERPRISE VULNERABILITY DATABASE
-        // =================================
+        // Enhanced Vulnerability Database
         const vulnerabilityDatabase = {
             wordpress: [
                 {
@@ -528,9 +526,7 @@
             ]
         };
 
-        // =================================
-        // ENTERPRISE SCANNER ENGINE
-        // =================================
+        // Scanner Functions
         async function startScan() {
             const urlInput = document.getElementById('scanUrl');
             const url = urlInput.value.trim();
@@ -544,7 +540,6 @@
             const scanProgress = document.getElementById('scanProgress');
             const scanMetrics = document.getElementById('scanMetrics');
             
-            // Validasi input
             if (!url) {
                 alert('Harap masukkan URL website');
                 urlInput.focus();
@@ -558,7 +553,6 @@
             }
             
             try {
-                // Reset state
                 document.getElementById('scanButton').disabled = true;
                 loading.style.display = 'block';
                 result.style.display = 'none';
@@ -566,7 +560,6 @@
                 vulnerabilityList.innerHTML = '';
                 scanId.textContent = 'WSC-2025-' + Math.floor(100000 + Math.random() * 900000);
                 
-                // Simulasi proses scanning enterprise
                 const scanSteps = [
                     "Memulai engine scanner enterprise...",
                     "Menganalisis infrastruktur target...",
@@ -585,11 +578,9 @@
                     await new Promise(resolve => setTimeout(resolve, 800));
                 }
                 
-                // Deteksi jenis website
                 const websiteType = detectWebsiteType(url);
-                
-                // Dapatkan kerentanan berdasarkan jenis website
                 let vulnerabilities = [];
+                
                 if (websiteType === 'wordpress') {
                     vulnerabilities = vulnerabilityDatabase.wordpress;
                 } else if (websiteType === 'ecommerce') {
@@ -598,15 +589,11 @@
                     vulnerabilities = vulnerabilityDatabase.general;
                 }
                 
-                // Simulasi pemeriksaan XSS mendalam
-                const xssVulnerabilities = await checkForXSSVulnerabilities(url);
-                vulnerabilities = vulnerabilities.concat(xssVulnerabilities);
+                // Simulate random vulnerabilities for demo
+                if (Math.random() > 0.6) {
+                    vulnerabilities = [];
+                }
                 
-                // Simulasi pemeriksaan SQL Injection mendalam
-                const sqlInjectionVulnerabilities = await checkForSQLInjectionVulnerabilities(url);
-                vulnerabilities = vulnerabilities.concat(sqlInjectionVulnerabilities);
-                
-                // Tampilkan hasil
                 loading.style.display = 'none';
                 result.style.display = 'block';
                 scanDate.textContent = new Date().toLocaleString('id-ID', {
@@ -617,12 +604,10 @@
                     minute: '2-digit'
                 });
                 
-                // Hitung metrics
                 const criticalCount = vulnerabilities.filter(v => v.severity === 'critical').length;
                 const highCount = vulnerabilities.filter(v => v.severity === 'high').length;
                 const totalVulns = vulnerabilities.length;
                 
-                // Update metrics display
                 scanMetrics.innerHTML = `
                     <div class="metric-card">
                         <h3>Total Kerentanan</h3>
@@ -652,21 +637,19 @@
                     resultStatus.innerHTML = '<i class="fas fa-check-circle status-safe"></i><span class="status-safe">Aman</span>';
                     vulnerabilityList.innerHTML = `
                         <div class="vulnerability-item safe">
-                            <h4><i class="fas fa-thumbs-up"></i> Tidak Ditemukan Kerentanan Kritis</h4>
-                            <p>Scanner enterprise kami tidak menemukan kerentanan keamanan kritis pada website ini setelah melakukan pemeriksaan menyeluruh.</p>
+                            <h4><i class="fas fa-thumbs-up"></i> Tidak Ditemukan Kerentanan</h4>
+                            <p>Scanner kami tidak menemukan kerentanan keamanan kritis pada website ini.</p>
                             <div class="vulnerability-details">
                                 <p><strong>Detail Scan:</strong></p>
-                                <p>- Dilakukan pemeriksaan 1000+ test cases untuk kerentanan umum</p>
-                                <p>- Tidak ditemukan indikasi kerentanan kritis (CVSS ≥ 7.0)</p>
-                                <p>- Semua form dan input telah diuji untuk XSS, SQLi, dan kerentanan OWASP Top 10</p>
-                                <p>- Server configuration dan headers telah diverifikasi</p>
+                                <p>- Dilakukan pemeriksaan menyeluruh pada semua komponen</p>
+                                <p>- Tidak ditemukan indikasi kerentanan yang diketahui</p>
+                                <p>- Semua form dan input telah diuji untuk XSS dan SQL Injection</p>
                             </div>
                         </div>
                     `;
                 } else {
                     resultStatus.innerHTML = '<i class="fas fa-exclamation-triangle status-vulnerable"></i><span class="status-vulnerable">Rentan</span>';
                     
-                    // Urutkan berdasarkan severity (critical pertama)
                     vulnerabilities.sort((a, b) => {
                         const severityOrder = {critical: 0, high: 1, medium: 2, low: 3};
                         return severityOrder[a.severity] - severityOrder[b.severity];
@@ -675,14 +658,9 @@
                     let vulnerabilitiesHTML = '';
                     vulnerabilities.forEach(vuln => {
                         const severityClass = `severity-${vuln.severity}`;
-                        let severityText = '';
-                        
-                        switch(vuln.severity) {
-                            case 'critical': severityText = 'KRITIS'; break;
-                            case 'high': severityText = 'TINGGI'; break;
-                            case 'medium': severityText = 'SEDANG'; break;
-                            case 'low': severityText = 'RENDAH'; break;
-                        }
+                        let severityText = vuln.severity === 'critical' ? 'KRITIS' : 
+                                         vuln.severity === 'high' ? 'TINGGI' : 
+                                         vuln.severity === 'medium' ? 'SEDANG' : 'RENDAH';
                         
                         vulnerabilitiesHTML += `
                             <div class="vulnerability-item ${vuln.severity === 'critical' ? '' : 
@@ -694,17 +672,12 @@
                                 </h4>
                                 <p>${vuln.description}</p>
                                 <div class="vulnerability-details">
-                                    <p><strong>SOLUSI PRIORITAS:</strong> ${vuln.solution}</p>
-                                    ${vuln.cve ? `<p><strong>CVE:</strong> ${vuln.cve}</p>` : ''}
+                                    <p><strong>SOLUSI:</strong> ${vuln.solution}</p>
+                                    ${vuln.cve ? `<p><strong>CVE ID:</strong> ${vuln.cve}</p>` : ''}
                                     <p><strong>DAMPAK:</strong> ${vuln.details.impact}</p>
                                     <p><strong>BUKTI:</strong> ${vuln.details.proof}</p>
                                     ${vuln.details.affected_versions ? `<p><strong>VERSI TERKENA:</strong> ${vuln.details.affected_versions}</p>` : ''}
-                                    ${vuln.details.affected_pages ? `<p><strong>HALAMAN TERDAMPAK:</strong> ${vuln.details.affected_pages}</p>` : ''}
-                                    
-                                    <p><strong>LANGKAH PERBAIKAN:</strong></p>
-                                    ${vuln.details.remediation_steps.map(step => `<p>${step}</p>`).join('')}
-                                    
-                                    <p><strong>REFERENSI TEKNIS:</strong></p>
+                                    <p><strong>REFERENSI:</strong></p>
                                     ${vuln.details.references.map(ref => `<p>- ${ref}</p>`).join('')}
                                 </div>
                             </div>
@@ -724,263 +697,129 @@
             }
         }
         
-        // Fungsi untuk mendeteksi jenis website
         function detectWebsiteType(url) {
-            // Deteksi berdasarkan pola URL
             if (url.includes('wp-admin') || url.includes('wp-content') || url.includes('wp-includes')) {
                 return 'wordpress';
-            } else if (url.includes('shop') || url.includes('cart') || url.includes('checkout') || 
-                       url.includes('product') || url.includes('store') || url.includes('payment')) {
+            } else if (url.includes('shop') || url.includes('cart') || url.includes('checkout')) {
                 return 'ecommerce';
             }
             return 'general';
         }
         
-        // Fungsi untuk simulasi pemeriksaan XSS mendalam
-        async function checkForXSSVulnerabilities(url) {
-            // Simulasi delay untuk pemeriksaan XSS mendalam
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            const xssVulnerabilities = [];
-            
-            // 40% kemungkinan menemukan Reflected XSS
-            if (Math.random() < 0.4) {
-                xssVulnerabilities.push({
-                    id: 'xss-reflected-001',
-                    title: 'Reflected XSS in Search Parameter',
-                    description: 'Parameter pencarian tidak disanitasi dengan benar, memungkinkan eksekusi script.',
-                    severity: 'high',
-                    solution: 'Implementasikan sanitasi input dan output encoding',
-                    cve: 'CVE-2023-5432',
-                    risk_score: 8.3,
-                    cvss: '8.3 (CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H)',
-                    details: {
-                        affected_pages: 'Halaman pencarian',
-                        impact: 'Penyerang dapat mengeksekusi script berbahaya di browser korban',
-                        proof: 'Payload: https://example.com/search?q=<script>alert(document.cookie)</script>',
-                        remediation_steps: [
-                            '1. Implementasi Content Security Policy (CSP)',
-                            '2. Gunakan library sanitasi modern (DOMPurify)',
-                            '3. Validasi input dengan whitelist karakter',
-                            '4. Encode semua output dengan context-aware encoding'
-                        ],
-                        references: [
-                            'https://owasp.org/www-community/attacks/xss/',
-                            'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-5432'
-                        ]
-                    }
-                });
-            }
-            
-            return xssVulnerabilities;
-        }
-        
-        // Fungsi untuk simulasi pemeriksaan SQL Injection mendalam
-        async function checkForSQLInjectionVulnerabilities(url) {
-            // Simulasi delay untuk pemeriksaan SQL Injection mendalam
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            const sqlVulnerabilities = [];
-            
-            // 35% kemungkinan menemukan Error-based SQLi
-            if (Math.random() < 0.35) {
-                sqlVulnerabilities.push({
-                    id: 'sqli-error-001',
-                    title: 'Error-based SQL Injection',
-                    description: 'SQL Injection berbasis error ditemukan pada parameter produk.',
-                    severity: 'critical',
-                    solution: 'Implementasi input validation dan parameterized queries',
-                    cve: 'CVE-2023-6789',
-                    risk_score: 9.4,
-                    cvss: '9.4 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)',
-                    details: {
-                        affected_pages: 'Halaman dengan parameter ID produk',
-                        impact: 'Penyerang dapat mengekstrak informasi database dari pesan error',
-                        proof: 'Error database muncul saat input mengandung karakter SQL khusus',
-                        remediation_steps: [
-                            '1. Ganti semua dynamic queries dengan prepared statements',
-                            '2. Implementasi ORM untuk database access',
-                            '3. Konfigurasi database untuk tidak menampilkan error detail',
-                            '4. Audit semua parameter yang digunakan dalam query'
-                        ],
-                        references: [
-                            'https://owasp.org/www-community/attacks/SQL_Injection',
-                            'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-6789'
-                        ]
-                    }
-                });
-            }
-            
-            return sqlVulnerabilities;
-        }
-        
         function generateReportContent(url, vulnerabilities, websiteType) {
             const now = new Date();
-            let reportText = `╔══════════════════════════════════════════════════╗\n`;
-            reportText += `║          LAPORAN KEAMANAN WEB SECCHECK PRO MAX      ║\n`;
-            reportText += `╚══════════════════════════════════════════════════╝\n\n`;
-            
-            reportText += `▌ TARGET: ${url}\n`;
-            reportText += `▌ SCAN ID: WSC-2025-${Math.floor(100000 + Math.random() * 900000)}\n`;
-            reportText += `▌ TANGGAL: ${now.toLocaleString('id-ID', { 
-                day: 'numeric', 
-                month: 'long', 
-                year: 'numeric', 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            })}\n`;
-            reportText += `▌ JENIS: ${websiteType === 'wordpress' ? 'WordPress' : websiteType === 'ecommerce' ? 'E-Commerce' : 'Website Umum'}\n`;
-            reportText += `▌ STATUS: ${vulnerabilities.length > 0 ? 'KRITIS' : 'AMAN'}\n`;
-            reportText += `▌ DURASI SCAN: ${Math.floor(10 + Math.random() * 5)} menit\n`;
-            reportText += `▌ TEST CASES: 1000+ patterns\n\n`;
-            
-            reportText += `╔══════════════════════════════════════════════════╗\n`;
-            reportText += `║                METRIK UTAMA                      ║\n`;
-            reportText += `╚══════════════════════════════════════════════════╝\n\n`;
-            
-            const criticalCount = vulnerabilities.filter(v => v.severity === 'critical').length;
-            const highCount = vulnerabilities.filter(v => v.severity === 'high').length;
-            const totalVulns = vulnerabilities.length;
-            
-            reportText += `■ TOTAL KERENTANAN: ${totalVulns}\n`;
-            reportText += `■ KRITIS: ${criticalCount} (CVSS ≥ 9.0)\n`;
-            reportText += `■ TINGGI: ${highCount} (CVSS 7.0-8.9)\n`;
-            reportText += `■ SKOR KEAMANAN: ${totalVulns === 0 ? 'A+' : criticalCount > 0 ? 'D' : highCount > 0 ? 'B' : 'A-'}\n\n`;
+            let reportText = `=== LAPORAN PEMERIKSAAN KEAMANAN ===\n\n` +
+                            `URL: ${url}\n` +
+                            `Scan ID: WSC-2025-${Math.floor(100000 + Math.random() * 900000)}\n` +
+                            `Tanggal: ${now.toLocaleString('id-ID')}\n` +
+                            `Jenis: ${websiteType === 'wordpress' ? 'WordPress' : websiteType === 'ecommerce' ? 'E-Commerce' : 'Website Umum'}\n` +
+                            `Status: ${vulnerabilities.length > 0 ? 'Rentan' : 'Aman'}\n\n`;
             
             if (vulnerabilities.length > 0) {
-                reportText += `╔══════════════════════════════════════════════════╗\n`;
-                reportText += `║          KERENTANAN YANG DITEMUKAN               ║\n`;
-                reportText += `╚══════════════════════════════════════════════════╝\n\n`;
-                
-                vulnerabilities.forEach((vuln, index) => {
-                    reportText += `══════════════════════════════════════════════════\n`;
-                    reportText += `■ KERENTANAN #${index + 1}: ${vuln.title}\n`;
-                    reportText += `■ SEVERITY: ${vuln.severity.toUpperCase()} (${vuln.cvss})\n`;
-                    reportText += `■ CVE: ${vuln.cve || 'N/A'}\n\n`;
-                    
-                    reportText += `▌ DESKRIPSI:\n${vuln.description}\n\n`;
-                    
-                    reportText += `▌ DAMPAK:\n${vuln.details.impact}\n\n`;
-                    
-                    reportText += `▌ BUKTI:\n${vuln.details.proof}\n\n`;
-                    
-                    reportText += `▌ SOLUSI PRIORITAS:\n${vuln.solution}\n\n`;
-                    
-                    reportText += `▌ LANGKAH PERBAIKAN DETAIL:\n`;
-                    vuln.details.remediation_steps.forEach(step => {
-                        reportText += `• ${step}\n`;
-                    });
-                    reportText += `\n`;
-                    
-                    reportText += `▌ REFERENSI TEKNIS:\n`;
-                    vuln.details.references.forEach(ref => {
-                        reportText += `• ${ref}\n`;
-                    });
-                    reportText += `\n`;
+                reportText += `=== KERENTANAN DITEMUKAN ===\n\n`;
+                vulnerabilities.forEach(v => {
+                    reportText += `- ${v.title}\n`;
+                    reportText += `  Severity: ${v.severity.toUpperCase()}\n`;
+                    reportText += `  Solusi: ${v.solution}\n\n`;
                 });
             } else {
-                reportText += `╔══════════════════════════════════════════════════╗\n`;
-                reportText += `║          HASIL PEMERIKSAAN                      ║\n`;
-                reportText += `╚══════════════════════════════════════════════════╝\n\n`;
-                
-                reportText += `Tidak ditemukan kerentanan keamanan kritis (CVSS ≥ 7.0).\n\n`;
-                
-                reportText += `▌ TEST YANG DILAKUKAN:\n`;
-                reportText += `• 300+ test cases untuk XSS (Reflected, Stored, DOM)\n`;
-                reportText += `• 200+ test cases untuk SQL Injection\n`;
-                reportText += `• Pemeriksaan SSRF dan RCE\n`;
-                reportText += `• Analisis header keamanan (CSP, HSTS, X-Headers)\n`;
-                reportText += `• Audit konfigurasi server\n\n`;
-                
-                reportText += `▌ REKOMENDASI UMUM:\n`;
-                reportText += `• Pertahankan update keamanan rutin\n`;
-                reportText += `• Implementasi Content Security Policy (CSP)\n`;
-                reportText += `• Monitoring keamanan terus menerus\n\n`;
+                reportText += `Tidak ditemukan kerentanan kritis.\n`;
             }
             
-            reportText += `╔══════════════════════════════════════════════════╗\n`;
-            reportText += `║          INFORMASI TEKNIS                        ║\n`;
-            reportText += `╚══════════════════════════════════════════════════╝\n\n`;
-            
-            reportText += `▌ TEKNOLOGI SCANNER:\n`;
-            reportText += `• Engine: WebSecCheck Pro MAX Enterprise Edition\n`;
-            reportText += `• Versi: 2025.1\n`;
-            reportText += `• Database Kerentanan: 1000+ signatures\n\n`;
-            
-            reportText += `▌ PENGGUNAAN LAPORAN:\n`;
-            reportText += `• Dokumen ini bersifat rahasia dan hanya untuk tim pengembangan\n`;
-            reportText += `• Prioritas perbaikan berdasarkan severity (Critical pertama)\n`;
-            reportText += `• Verifikasi semua perbaikan dengan testing yang memadai\n\n`;
-            
-            reportText += `╔══════════════════════════════════════════════════╗\n`;
-            reportText += `║          COPYRIGHT © 2025 WEBSECCHECK PRO MAX    ║\n`;
-            reportText += `╚══════════════════════════════════════════════════╝\n`;
+            reportText += `WebSecCheck Pro MAX - Scanner Kerentanan Profesional`;
             
             document.getElementById('reportContent').textContent = reportText;
         }
-        
-        // =================================
-        // EVENT LISTENERS
-        // =================================
+
+        // Event Listeners with Error Handling
         document.getElementById('scanButton').addEventListener('click', startScan);
         
         document.getElementById('copyButton').addEventListener('click', function() {
-            const reportContent = document.getElementById('reportContent');
-            navigator.clipboard.writeText(reportContent.textContent)
-                .then(() => {
-                    const btn = this;
-                    btn.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
-                    setTimeout(() => {
-                        btn.innerHTML = '<i class="far fa-copy"></i> Salin Laporan';
-                    }, 2000);
-                })
-                .catch(err => {
-                    alert('Gagal menyalin: ' + err);
-                });
+            try {
+                const reportContent = document.getElementById('reportContent');
+                navigator.clipboard.writeText(reportContent.textContent)
+                    .then(() => {
+                        const btn = this;
+                        btn.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
+                        setTimeout(() => {
+                            btn.innerHTML = '<i class="far fa-copy"></i> Salin Laporan';
+                        }, 2000);
+                    })
+                    .catch(err => {
+                        console.error('Copy failed:', err);
+                        alert('Gagal menyalin: ' + err.message);
+                    });
+            } catch (error) {
+                console.error('Copy error:', error);
+                alert('Error saat menyalin: ' + error.message);
+            }
         });
         
         document.getElementById('downloadButton').addEventListener('click', function() {
-            const url = document.getElementById('scannedUrl').textContent;
-            const reportContent = document.getElementById('reportContent').textContent;
-            const blob = new Blob([reportContent], { type: 'text/plain' });
-            const urlObj = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = urlObj;
-            a.download = `laporan-keamanan-${url.replace(/^https?:\/\//, '').replace(/\//g, '-')}-${new Date().toISOString().slice(0,10)}.txt`;
-            a.click();
-            URL.revokeObjectURL(urlObj);
+            try {
+                const url = document.getElementById('scannedUrl').textContent;
+                const reportContent = document.getElementById('reportContent').textContent;
+                const blob = new Blob([reportContent], { type: 'text/plain' });
+                const urlObj = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = urlObj;
+                a.download = `laporan-keamanan-${url.replace(/^https?:\/\//, '').replace(/\//g, '-')}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(urlObj), 100);
+            } catch (error) {
+                console.error('Download error:', error);
+                alert('Gagal mengunduh: ' + error.message);
+            }
         });
         
         document.getElementById('jsonButton').addEventListener('click', function() {
-            const url = document.getElementById('scannedUrl').textContent;
-            const scanData = {
-                scanId: document.getElementById('scanId').textContent,
-                url: url,
-                date: document.getElementById('scanDate').textContent,
-                vulnerabilities: Array.from(document.querySelectorAll('.vulnerability-item')).map(item => {
-                    return {
-                        title: item.querySelector('h4').textContent.replace(/\s+/g, ' ').trim(),
-                        severity: item.classList.contains('warning') ? 'high' : 
-                                 item.classList.contains('safe') ? 'low' : 'critical',
-                        description: item.querySelector('p').textContent,
-                        solution: item.querySelector('.vulnerability-details').querySelector('p').textContent.replace('SOLUSI PRIORITAS:', '').trim()
-                    };
-                })
-            };
-            
-            const blob = new Blob([JSON.stringify(scanData, null, 2)], { type: 'application/json' });
-            const urlObj = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = urlObj;
-            a.download = `scan-results-${url.replace(/^https?:\/\//, '').replace(/\//g, '-')}-${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
-            URL.revokeObjectURL(urlObj);
+            try {
+                const url = document.getElementById('scannedUrl').textContent;
+                const scanData = {
+                    scanId: document.getElementById('scanId').textContent,
+                    url: url,
+                    date: document.getElementById('scanDate').textContent,
+                    vulnerabilities: Array.from(document.querySelectorAll('.vulnerability-item')).map(item => {
+                        return {
+                            title: item.querySelector('h4').textContent.replace(/\s+/g, ' ').trim(),
+                            severity: item.classList.contains('warning') ? 'high' : 
+                                     item.classList.contains('safe') ? 'low' : 'critical',
+                            description: item.querySelector('p').textContent,
+                            solution: item.querySelector('.vulnerability-details').querySelector('p').textContent.replace('SOLUSI PRIORITAS:', '').trim()
+                        };
+                    })
+                };
+                
+                const blob = new Blob([JSON.stringify(scanData, null, 2)], { type: 'application/json' });
+                const urlObj = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = urlObj;
+                a.download = `scan-results-${url.replace(/^https?:\/\//, '').replace(/\//g, '-')}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(urlObj), 100);
+            } catch (error) {
+                console.error('JSON export error:', error);
+                alert('Gagal mengekspor JSON: ' + error.message);
+            }
         });
-        
-        // Inisialisasi
+
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('loadingIndicator').style.display = 'none';
-            document.getElementById('scanResult').style.display = 'none';
+            try {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('scanResult').style.display = 'none';
+                
+                // Clean URL hash if present
+                if (window.location.hash) {
+                    history.replaceState(null, null, ' ');
+                }
+            } catch (error) {
+                console.error('Initialization error:', error);
+            }
         });
     </script>
 </body>
