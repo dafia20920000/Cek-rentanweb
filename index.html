@@ -59,7 +59,7 @@
         }
         
         .nav-links a:hover {
-            background-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.2);
         }
         
         .container {
@@ -117,7 +117,7 @@
             padding: 1rem;
             border-radius: 8px;
             border: none;
-            background-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.1);
             color: white;
             font-size: 1rem;
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -198,7 +198,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(15, 15, 26, 0.9);
+            background: rgba(15, 15, 26, 0.9);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -298,7 +298,7 @@
         .loading-progress {
             width: 300px;
             height: 8px;
-            background-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
             margin-top: 1rem;
             overflow: hidden;
@@ -404,22 +404,22 @@
         }
         
         .status-critical {
-            background-color: rgba(233, 69, 96, 0.2);
+            background: rgba(233, 69, 96, 0.2);
             color: var(--danger);
         }
         
         .status-high {
-            background-color: rgba(255, 107, 107, 0.2);
+            background: rgba(255, 107, 107, 0.2);
             color: #ff6b6b;
         }
         
         .status-medium {
-            background-color: rgba(255, 204, 0, 0.2);
+            background: rgba(255, 204, 0, 0.2);
             color: var(--warning);
         }
         
         .status-low {
-            background-color: rgba(0, 180, 216, 0.2);
+            background: rgba(0, 180, 216, 0.2);
             color: var(--info);
         }
         
@@ -453,7 +453,7 @@
         }
         
         .code-snippet {
-            background-color: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.3);
             border-radius: 6px;
             padding: 1rem;
             margin-top: 1rem;
@@ -463,7 +463,7 @@
         }
         
         .recommendation {
-            background-color: rgba(0, 180, 216, 0.1);
+            background: rgba(0, 180, 216, 0.1);
             border-left: 4px solid var(--info);
             padding: 1rem;
             border-radius: 0 6px 6px 0;
@@ -521,7 +521,7 @@
         }
         
         .footer {
-            background-color: var(--dark);
+            background: var(--dark);
             padding: 2rem;
             text-align: center;
             margin-top: 3rem;
@@ -686,138 +686,12 @@
                 </button>
             </div>
             
-            <div class="dashboard">
-                <div class="stat-card">
-                    <h3>Total Vulnerabilities</h3>
-                    <div class="stat-value">14</div>
-                    <p>Found in this scan</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Critical Severity</h3>
-                    <div class="stat-value stat-critical">3</div>
-                    <p>Requires immediate attention</p>
-                </div>
-                <div class="stat-card">
-                    <h3>Scan Duration</h3>
-                    <div class="stat-value">2:45</div>
-                    <p>Minutes:Seconds</p>
-                </div>
+            <div class="dashboard" id="dashboard">
+                <!-- Results will appear here -->
             </div>
             
-            <div class="vulnerability-card critical">
-                <div class="vulnerability-header">
-                    <h3 class="vulnerability-title">SQL Injection Vulnerability</h3>
-                    <span class="vulnerability-status status-critical">Critical</span>
-                </div>
-                <p>SQL injection found in login form parameter 'username'</p>
-                
-                <div class="vulnerability-details">
-                    <div class="detail-row">
-                        <span class="detail-label">Location:</span>
-                        <span class="detail-value">https://example.com/login.php</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Parameter:</span>
-                        <span class="detail-value">username</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Risk:</span>
-                        <span class="detail-value">Allows database access and potential data breach</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Payload:</span>
-                        <span class="detail-value">admin' OR '1'='1'--</span>
-                    </div>
-                    
-                    <div class="code-snippet">
-                        <pre>// Vulnerable PHP code:
-$username = $_POST['username'];
-$password = $_POST['password'];
-$query = "SELECT * FROM users WHERE username='$username' AND password='$password'";
-$result = mysqli_query($conn, $query);</pre>
-                    </div>
-                    
-                    <div class="recommendation">
-                        <h4>Recommendation</h4>
-                        <p>Use prepared statements with parameterized queries:</p>
-                        <div class="code-snippet">
-                            <pre>// Secure PHP code:
-$stmt = $conn->prepare("SELECT * FROM users WHERE username=? AND password=?");
-$stmt->bind_param("ss", $username, $password);
-$stmt->execute();
-$result = $stmt->get_result();</pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="vulnerability-card high">
-                <div class="vulnerability-header">
-                    <h3 class="vulnerability-title">Reflected XSS Vulnerability</h3>
-                    <span class="vulnerability-status status-high">High</span>
-                </div>
-                <p>Cross-site scripting found in search parameter 'q'</p>
-                
-                <div class="vulnerability-details">
-                    <div class="detail-row">
-                        <span class="detail-label">Location:</span>
-                        <span class="detail-value">https://example.com/search.php</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Parameter:</span>
-                        <span class="detail-value">q</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Risk:</span>
-                        <span class="detail-value">Allows execution of arbitrary JavaScript in victim's browser</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Payload:</span>
-                        <span class="detail-value">&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span>
-                    </div>
-                    
-                    <div class="recommendation">
-                        <h4>Recommendation</h4>
-                        <p>Implement proper output encoding and input validation:</p>
-                        <div class="code-snippet">
-                            <pre>// Secure PHP code:
-echo htmlspecialchars($searchTerm, ENT_QUOTES, 'UTF-8');</pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="vulnerability-card medium">
-                <div class="vulnerability-header">
-                    <h3 class="vulnerability-title">CSRF Vulnerability</h3>
-                    <span class="vulnerability-status status-medium">Medium</span>
-                </div>
-                <p>Missing CSRF protection on password change form</p>
-                
-                <div class="vulnerability-details">
-                    <div class="detail-row">
-                        <span class="detail-label">Location:</span>
-                        <span class="detail-value">https://example.com/change_password.php</span>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Risk:</span>
-                        <span class="detail-value">Allows attackers to change user passwords without consent</span>
-                    </div>
-                    
-                    <div class="recommendation">
-                        <h4>Recommendation</h4>
-                        <p>Implement CSRF tokens:</p>
-                        <div class="code-snippet">
-                            <pre>// In form:
-&lt;input type="hidden" name="csrf_token" value="&lt;?php echo $_SESSION['csrf_token']; ?&gt;"&gt;
-
-// In PHP:
-if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-    die("CSRF token validation failed");
-}</pre>
-                        </div>
-                    </div>
-                </div>
+            <div id="vulnerabilities-container">
+                <!-- Vulnerabilities will appear here -->
             </div>
         </section>
     </div>
@@ -834,18 +708,35 @@ if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
     </footer>
     
     <script>
-        // Option card selection
-        document.querySelectorAll('.option-card').forEach(card => {
-            card.addEventListener('click', () => {
-                card.classList.toggle('selected');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize vulnerability selection
+            const optionCards = document.querySelectorAll('.option-card');
+            optionCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                });
             });
+            
+            // Start scan button
+            document.getElementById('start-scan').addEventListener('click', startScan);
+            
+            // Export report button
+            document.getElementById('export-report').addEventListener('click', exportReport);
         });
         
-        // Scan button functionality
-        document.getElementById('start-scan').addEventListener('click', () => {
-            const url = document.getElementById('target-url').value;
-            if (!url) {
+        function startScan() {
+            const targetUrl = document.getElementById('target-url').value;
+            const scanType = document.getElementById('scan-type').value;
+            const selectedVulns = Array.from(document.querySelectorAll('.option-card.selected'))
+                                    .map(card => card.dataset.vuln);
+            
+            if (!targetUrl) {
                 alert('Please enter a target URL');
+                return;
+            }
+            
+            if (selectedVulns.length === 0) {
+                alert('Please select at least one vulnerability type');
                 return;
             }
             
@@ -854,6 +745,10 @@ if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
             loadingScreen.style.display = 'flex';
             
             // Simulate scan progress
+            simulateScanProgress(targetUrl, selectedVulns);
+        }
+        
+        function simulateScanProgress(targetUrl, selectedVulns) {
             const loadingText = document.getElementById('loading-text');
             const progressBar = document.getElementById('progress-bar');
             
@@ -882,21 +777,141 @@ if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
                 if (progress >= 100) {
                     clearInterval(interval);
                     setTimeout(() => {
-                        loadingScreen.style.display = 'none';
-                        document.getElementById('results-section').style.display = 'block';
-                        window.scrollTo({
-                            top: document.getElementById('results-section').offsetTop,
-                            behavior: 'smooth'
-                        });
+                        document.getElementById('loading-screen').style.display = 'none';
+                        showScanResults(targetUrl, selectedVulns);
                     }, 1000);
                 }
             }, 500);
-        });
+        }
         
-        // Export report functionality
-        document.getElementById('export-report').addEventListener('click', () => {
-            alert('Report exported successfully!\n\nThis would generate a detailed PDF report in a real implementation.');
-        });
+        function showScanResults(targetUrl, selectedVulns) {
+            const resultsSection = document.getElementById('results-section');
+            resultsSection.style.display = 'block';
+            
+            // Update dashboard
+            const dashboard = document.getElementById('dashboard');
+            dashboard.innerHTML = `
+                <div class="stat-card">
+                    <h3>Total Vulnerabilities</h3>
+                    <div class="stat-value">5</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Critical Severity</h3>
+                    <div class="stat-value stat-critical">2</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Scan Duration</h3>
+                    <div class="stat-value">2:45</div>
+                </div>
+            `;
+            
+            // Show vulnerabilities
+            const vulnContainer = document.getElementById('vulnerabilities-container');
+            vulnContainer.innerHTML = '';
+            
+            // Sample vulnerabilities (replace with real scan results)
+            const vulnerabilities = [
+                {
+                    type: 'SQL Injection',
+                    severity: 'Critical',
+                    details: 'SQL injection found in login form parameter "username"',
+                    location: `${targetUrl}/login.php`,
+                    parameter: 'username',
+                    payload: "admin' OR '1'='1'--",
+                    recommendation: 'Use prepared statements with parameterized queries'
+                },
+                {
+                    type: 'Reflected XSS',
+                    severity: 'High',
+                    details: 'Cross-site scripting found in search parameter "q"',
+                    location: `${targetUrl}/search.php`,
+                    parameter: 'q',
+                    payload: "<script>alert(document.cookie)</script>",
+                    recommendation: 'Implement proper output encoding and input validation'
+                },
+                {
+                    type: 'CSRF Vulnerability',
+                    severity: 'Medium',
+                    details: 'Missing CSRF protection on password change form',
+                    location: `${targetUrl}/change_password.php`,
+                    recommendation: 'Implement CSRF tokens in all state-changing requests'
+                }
+            ];
+            
+            vulnerabilities.forEach(vuln => {
+                const vulnCard = document.createElement('div');
+                vulnCard.className = `vulnerability-card ${vuln.severity.toLowerCase()}`;
+                
+                let vulnHtml = `
+                    <div class="vulnerability-header">
+                        <h3 class="vulnerability-title">${vuln.type}</h3>
+                        <span class="vulnerability-status status-${vuln.severity.toLowerCase()}">
+                            ${vuln.severity}
+                        </span>
+                    </div>
+                    <p>${vuln.details}</p>
+                    <div class="vulnerability-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Location:</span>
+                            <span class="detail-value">${vuln.location}</span>
+                        </div>
+                `;
+                
+                if (vuln.parameter) {
+                    vulnHtml += `
+                        <div class="detail-row">
+                            <span class="detail-label">Parameter:</span>
+                            <span class="detail-value">${vuln.parameter}</span>
+                        </div>
+                    `;
+                }
+                
+                if (vuln.payload) {
+                    vulnHtml += `
+                        <div class="detail-row">
+                            <span class="detail-label">Payload:</span>
+                            <span class="detail-value">${vuln.payload}</span>
+                        </div>
+                    `;
+                }
+                
+                vulnHtml += `
+                        <div class="recommendation">
+                            <h4>Recommendation</h4>
+                            <p>${vuln.recommendation}</p>
+                `;
+                
+                if (vuln.type === 'SQL Injection') {
+                    vulnHtml += `
+                            <div class="code-snippet">
+                                <pre>// Secure PHP code:
+$stmt = $conn->prepare("SELECT * FROM users WHERE username=? AND password=?");
+$stmt->bind_param("ss", $username, $password);
+$stmt->execute();
+$result = $stmt->get_result();</pre>
+                            </div>
+                    `;
+                }
+                
+                vulnHtml += `
+                        </div>
+                    </div>
+                `;
+                
+                vulnCard.innerHTML = vulnHtml;
+                vulnContainer.appendChild(vulnCard);
+            });
+            
+            // Scroll to results
+            window.scrollTo({
+                top: resultsSection.offsetTop,
+                behavior: 'smooth'
+            });
+        }
+        
+        function exportReport() {
+            alert('Report exported successfully!\n\nIn a real implementation, this would generate a detailed PDF report.');
+        }
     </script>
 </body>
 </html>
