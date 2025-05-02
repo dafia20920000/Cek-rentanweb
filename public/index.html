@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Control Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Remote Control Panel</h1>
+        
+        <div class="connection">
+            <h2>🔌 Connection</h2>
+            <input type="text" id="targetIp" placeholder="Target IP:Port (e.g., 103.148.79.97:3000)">
+            <input type="password" id="password" placeholder="Password">
+            <button id="connectBtn">Connect</button>
+            <p id="connectionStatus">Status: Disconnected</p>
+        </div>
+        
+        <div class="control-section">
+            <h2>🛠️ Controls</h2>
+            
+            <div class="control-group">
+                <h3>🌐 Browser</h3>
+                <input type="text" id="urlInput" placeholder="https://example.com">
+                <button id="openBrowserBtn">Open Browser</button>
+            </div>
+            
+            <div class="control-group">
+                <h3>🔍 Search</h3>
+                <input type="text" id="searchInput" placeholder="Search Google...">
+                <button id="searchBtn">Search</button>
+            </div>
+            
+            <div class="control-group">
+                <h3>🖼️ Wallpaper</h3>
+                <input type="text" id="wallpaperUrl" placeholder="Image URL">
+                <button id="setWallpaperBtn">Set Wallpaper</button>
+            </div>
+            
+            <div class="control-group">
+                <h3>📢 Notification</h3>
+                <input type="text" id="notifTitle" placeholder="Title">
+                <input type="text" id="notifMessage" placeholder="Message">
+                <button id="sendNotifBtn">Send Notification</button>
+            </div>
+        </div>
+        
+        <div class="logs-section">
+            <h2>📝 Key Logs</h2>
+            <button id="getLogsBtn">Get Logs</button>
+            <textarea id="logsOutput" readonly></textarea>
+            <button id="clearLogsBtn">Clear Logs</button>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
